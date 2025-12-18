@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+int main() {
+    char S[1000], S0[1000];
+    
+    // Ввод строк
+    printf("Введите строку S: ");
+    fgets(S, sizeof(S), stdin);
+    // Убираем символ новой строки, если он есть
+    S[strcspn(S, "\n")] = '\0';
+    
+    printf("Введите подстроку S0: ");
+    fgets(S0, sizeof(S0), stdin);
+    S0[strcspn(S0, "\n")] = '\0';
+    
+    // Вывод исходных данных
+    printf("\nИсходная строка S: \"%s\"\n", S);
+    printf("Подстрока S0: \"%s\"\n", S0);
+    
+    // Если S0 пустая строка, выводим S без изменений
+    if (strlen(S0) == 0) {
+        printf("Подстрока S0 пуста. Результат без изменений: \"%s\"\n", S);
+        return 0;
+    }
+    
+    // Поиск последнего вхождения S0 в S
+    char *last_occurrence = NULL;
+    char *current_position = S;
+    
+    while ((current_position = strstr(current_position, S0)) != NULL) {
+        last_occurrence = current_position;  // Запоминаем текущее вхождение
+        current_position++;  // Сдвигаемся на 1 символ для поиска следующего вхождения
+    }
+    
+    // Если подстрока не найдена
+    if (last_occurrence == NULL) {
+        printf("Подстрока S0 не найдена в строке S. Результат без изменений: \"%s\"\n", S);
+        return 0;
+    }
+    
+    // Вычисляем позицию последнего вхождения
+    int position = last_occurrence - S;
+    int len_S0 = strlen(S0);
+    int len_S = strlen(S);
+    
+    printf("Последнее вхождение S0 найдено на позиции: %d\n", position);
+    
+    // Создаем новую строку без последнего вхождения S0
+    char result[1000];
+    int i, j = 0;
+    
+    // Копируем часть до последнего вхождения
+    for (i = 0; i < position; i++) {
+        result[j++] = S[i];
+    }
+    
+    // Пропускаем подстроку S0
+    // Копируем часть после последнего вхождения
+    for (i = position + len_S0; i < len_S; i++) {
+        result[j++] = S[i];
+    }
+    
+    result[j] = '\0';  // Завершаем строку
+    
+    // Вывод результата
+    printf("\nРезультат после удаления последней подстроки S0: \"%s\"\n", result);
+    printf("Длина исходной строки: %d\n", len_S);
+    printf("Длина результирующей строки: %d\n", j);
+    
+    return 0;
+}
