@@ -1,0 +1,74 @@
+#include <stdio.h>
+
+// Процедура удаления "лишних" элементов для получения неубывающей последовательности
+void RemoveForInc(double A[], int *N) {
+    if (*N <= 1) return;  // Если массив пуст или содержит один элемент, ничего не делаем
+    
+    int j = 0;  // Индекс последнего оставленного элемента
+    
+    // Проходим по всем элементам массива, начиная со второго
+    for (int i = 1; i < *N; i++) {
+        // Если текущий элемент не меньше последнего оставленного, оставляем его
+        if (A[i] >= A[j]) {
+            j++;
+            A[j] = A[i];
+        }
+        // Иначе - пропускаем (удаляем)
+    }
+    
+    // Новый размер массива
+    *N = j + 1;
+}
+
+// Функция для вывода массива
+void printArray(double arr[], int n, const char* name) {
+    printf("%s[%d] = {", name, n);
+    for (int i = 0; i < n; i++) {
+        printf("%.2f", arr[i]);
+        if (i < n - 1) printf(", ");
+    }
+    printf("}\n");
+}
+
+int main() {
+    // Массив A из условия
+    double A[] = {5.5, 2.5, 4.6, 7.2, 5.8, 9.4};
+    int Na = sizeof(A) / sizeof(A[0]);
+    
+    // Массив B - уже упорядоченный по возрастанию
+    double B[] = {1.1, 2.2, 3.3, 4.4, 5.5};
+    int Nb = sizeof(B) / sizeof(B[0]);
+    
+    // Массив C - упорядоченный по убыванию
+    double C[] = {9.0, 8.0, 7.0, 6.0, 5.0, 4.0};
+    int Nc = sizeof(C) / sizeof(C[0]);
+    
+    // Вывод исходных массивов
+    printf("Исходные массивы:\n");
+    printArray(A, Na, "A");
+    printArray(B, Nb, "B");
+    printArray(C, Nc, "C");
+    printf("\n");
+    
+    // Преобразование массива A
+    RemoveForInc(A, &Na);
+    printf("После преобразования массива A:\n");
+    printf("Размер A: %d\n", Na);
+    printArray(A, Na, "A");
+    printf("\n");
+    
+    // Преобразование массива B
+    RemoveForInc(B, &Nb);
+    printf("После преобразования массива B:\n");
+    printf("Размер B: %d\n", Nb);
+    printArray(B, Nb, "B");
+    printf("\n");
+    
+    // Преобразование массива C
+    RemoveForInc(C, &Nc);
+    printf("После преобразования массива C:\n");
+    printf("Размер C: %d\n", Nc);
+    printArray(C, Nc, "C");
+    
+    return 0;
+}
