@@ -1,0 +1,25 @@
+#include <stdio.h>
+#include <math.h>
+
+int main() {
+    double a, b;
+    double geometric_mean;
+    
+    // Ввод двух неотрицательных чисел
+    printf("Введите два неотрицательных числа a и b: ");
+    scanf("%lf %lf", &a, &b);
+    
+    // Проверка, что числа неотрицательные
+    if (a < 0 || b < 0) {
+        printf("Ошибка: числа должны быть неотрицательными!\n");
+        return 1;
+    }
+    
+    // Вычисление среднего геометрического
+    geometric_mean = sqrt(a * b);
+    
+    // Вывод результата
+    printf("Среднее геометрическое чисел %.2lf и %.2lf = %.4lf\n", a, b, geometric_mean);
+    
+    return 0;
+}
