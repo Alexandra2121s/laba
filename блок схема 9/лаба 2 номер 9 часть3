@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <stdbool.h>  // для типа bool и констант true/false
+
+// Функция Even: возвращает true, если K четное, иначе false
+bool Even(int K) {
+    return K % 2 == 0;  // Остаток от деления на 2 равен 0 для четных чисел
+}
+
+int main() {
+    int numbers[10];
+    int count = 0;  // Счетчик четных чисел
+    
+    // Ввод 10 целых чисел
+    printf("Введите 10 целых чисел:\n");
+    for (int i = 0; i < 10; i++) {
+        printf("Число %d: ", i + 1);
+        scanf("%d", &numbers[i]);
+    }
+    
+    // Подсчет четных чисел с использованием функции Even
+    for (int i = 0; i < 10; i++) {
+        if (Even(numbers[i])) {
+            count++;
+        }
+    }
+    
+    // Вывод результата
+    printf("Количество четных чисел в наборе: %d\n", count);
+    
+    // Дополнительно: вывод самих четных чисел
+    if (count > 0) {
+        printf("Четные числа: ");
+        for (int i = 0; i < 10; i++) {
+            if (Even(numbers[i])) {
+                printf("%d ", numbers[i]);
+            }
+        }
+        printf("\n");
+    }
+    
+    return 0;
+}
