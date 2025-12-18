@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <string.h>
+
+// Функция для поиска позиции последнего вхождения подстроки S0 в строке S
+int PosLast(const char* S0, const char* S) {
+    int len_S0 = strlen(S0);
+    int len_S = strlen(S);
+    
+    // Если подстрока пустая или длиннее строки
+    if (len_S0 == 0 || len_S0 > len_S) {
+        return 0;
+    }
+    
+    int last_pos = 0;
+    const char* current_pos = S;
+    
+    // Поиск всех вхождений и запоминание последнего
+    while ((current_pos = strstr(current_pos, S0)) != NULL) {
+        // Вычисляем позицию (начиная с 1)
+        last_pos = current_pos - S + 1;
+        // Переходим к следующему символу для поиска следующего вхождения
+        current_pos += len_S0;
+    }
+    
+    return last_pos;
+}
+
+int main() {
+    // Массив из пяти пар строк для тестирования
+    const char* test_cases[5][2] = {
+        {"ab", "abracadabra"},               // S0 = "ab", S = "abracadabra"
+        {"xyz", "abcdefghijklmnopqrstuvwxyz"}, // S0 = "xyz", S = "abcdefghijklmnopqrstuvwxyz"
+        {"aa", "aaaaa"},                     // S0 = "aa", S = "aaaaa"
+        {"hello", "hello world hello there"}, // S0 = "hello", S = "hello world hello there"
+        {"test", "this is a test string for testing test cases"} // S0 = "test", S = "this is a test string for testing test cases"
+    };
+    
+    printf("Поиск последнего вхождения подстроки:\n");
+    printf("=====================================\n\n");
+    
+    for (int i = 0; i < 5; i++) {
+        const char* S0 = test_cases[i][0];
+        const char* S = test_cases[i][1];
+        int result = PosLast(S0, S);
+        
+        printf("Пара %d:\n", i + 1);
+        printf("  S0 = \"%s\"\n", S0);
+        printf("  S  = \"%s\"\n", S);
+        
+        if (result > 0) {
+            printf("  Последнее вхождение подстроки S0 в строке S начинается с позиции: %d\n", result);
+            
+            // Дополнительно покажем найденную подстроку в контексте
+            printf("  Найденная подстрока: \"");
+            for (int j = result - 1; j < result - 1 + strlen(S0); j++) {
+                printf("%c", S[j]);
+            }
+            printf("\"\n");
+        } else {
+            printf("  Подстрока S0 не найдена в строке S\n");
+        }
+        printf("\n");
+    }
+    
+    return 0;
+}
