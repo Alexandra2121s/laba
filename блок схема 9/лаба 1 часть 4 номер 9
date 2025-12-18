@@ -1,0 +1,99 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+int main() {
+    char filename1[256], filename2[256];
+    FILE *file1, *file2;
+    
+    // Ввод имен двух файлов
+    printf("Введите имя первого файла: ");
+    scanf("%255s", filename1);
+    printf("Введите имя второго файла: ");
+    scanf("%255s", filename2);
+    
+    // Попытка открыть первый файл для чтения
+    file1 = fopen(filename1, "r");
+    
+    // Попытка открыть второй файл для чтения
+    file2 = fopen(filename2, "r");
+    
+    // Определяем, какой файл существует, а какой отсутствует
+    bool file1_exists = (file1 != NULL);
+    bool file2_exists = (file2 != NULL);
+    
+    // Проверяем условие: ровно один файл существует и является непустым
+    if (file1_exists && file2_exists) {
+        printf("Ошибка: оба файла существуют!\n");
+        fclose(file1);
+        fclose(file2);
+        return 1;
+    }
+    
+    if (!file1_exists && !file2_exists) {
+        printf("Ошибка: оба файла отсутствуют!\n");
+        return 1;
+    }
+    
+    // Определяем существующий и отсутствующий файлы
+    char *existing_file, *missing_file;
+    FILE *existing_fp;
+    
+    if (file1_exists) {
+        existing_file = filename1;
+        missing_file = filename2;
+        existing_fp = file1;
+        if (file2) fclose(file2);  // На всякий случай, если file2 открыт
+    } else {
+        existing_file = filename2;
+        missing_file = filename1;
+        existing_fp = file2;
+        if (file1) fclose(file1);  // На всякий случай, если file1 открыт
+    }
+    
+    // Проверяем, что существующий файл непустой
+    // Для этого пытаемся прочитать хотя бы одно число
+    double first_number, last_number, current_number;
+    
+    if (fscanf(existing_fp, "%lf", &first_number) != 1) {
+        printf("Ошибка: существующий файл '%s' пустой!\n", existing_file);
+        fclose(existing_fp);
+        return 1;
+    }
+    
+    // Инициализируем last_number как first_number (на случай, если в файле только одно число)
+    last_number = first_number;
+    
+    // Читаем остальные числа, чтобы найти последнее
+    while (fscanf(existing_fp, "%lf", &current_number) == 1) {
+        last_number = current_number;
+    }
+    
+    // Закрываем существующий файл
+    fclose(existing_fp);
+    
+    // Создаем отсутствующий файл и записываем в него числа
+    FILE *new_file = fopen(missing_file, "w");
+    if (new_file == NULL) {
+        printf("Ошибка: не удалось создать файл '%s'!\n", missing_file);
+        return 1;
+    }
+    
+    // Записываем конечный и начальный элементы (в указанном порядке)
+    fprintf(new_file, "%.6f\n%.6f\n", last_number, first_number);
+    
+    // Закрываем новый файл
+    fclose(new_file);
+    
+    // Выводим результат
+    printf("\nРезультат:\n");
+    printf("Существующий файл: '%s'\n", existing_file);
+    printf("Начальный элемент: %.6f\n", first_number);
+    printf("Конечный элемент: %.6f\n", last_number);
+    printf("\nСоздан файл: '%s'\n", missing_file);
+    printf("Содержимое нового файла:\n");
+    printf("%.6f\n", last_number);
+    printf("%.6f\n", first_number);
+    
+    return 0;
+}
