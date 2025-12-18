@@ -1,0 +1,69 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_LINES 1000  // Максимальное количество строк в файле
+#define MAX_LENGTH 1000 // Максимальная длина строки
+
+int main() {
+    char filename[256];
+    int K;
+    
+    // Ввод имени файла и числа K
+    printf("Введите имя текстового файла: ");
+    scanf("%255s", filename);
+    printf("Введите номер строки K: ");
+    scanf("%d", &K);
+    
+    // Открытие файла для чтения
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Ошибка: не удалось открыть файл '%s'!\n", filename);
+        return 1;
+    }
+    
+    // Чтение всех строк из файла в массив
+    char lines[MAX_LINES][MAX_LENGTH];
+    int line_count = 0;
+    
+    while (line_count < MAX_LINES && fgets(lines[line_count], MAX_LENGTH, file) != NULL) {
+        line_count++;
+    }
+    
+    fclose(file);
+    
+    // Проверяем, существует ли строка с номером K
+    if (K < 1 || K > line_count) {
+        printf("Строки с номером %d не существует. Файл оставлен без изменений.\n", K);
+        return 0;
+    }
+    
+    // Создаем временный файл для записи результата
+    char temp_filename[256];
+    sprintf(temp_filename, "%s.temp", filename);
+    
+    FILE *temp_file = fopen(temp_filename, "w");
+    if (temp_file == NULL) {
+        printf("Ошибка: не удалось создать временный файл!\n");
+        return 1;
+    }
+    
+    // Записываем строки во временный файл, вставляя пустую строку перед строкой K
+    for (int i = 0; i < line_count; i++) {
+        if (i == K - 1) {  // Достигли строки с номером K (K-1 в 0-индексации)
+            fprintf(temp_file, "\n");  // Вставляем пустую строку
+        }
+        fprintf(temp_file, "%s", lines[i]);
+    }
+    
+    fclose(temp_file);
+    
+    // Заменяем исходный файл временным
+    remove(filename);
+    rename(temp_filename, filename);
+    
+    printf("Пустая строка успешно вставлена перед строкой %d.\n", K);
+    printf("Общее количество строк в файле: %d\n", line_count);
+    
+    return 0;
+}
